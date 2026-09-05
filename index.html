@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사료로 키우는 한국사 문해력 (스마트 훈련 모드)</title>
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --primary-light: #eff6ff;
+      --teacher-color: #7c3aed;
+      --teacher-light: #f5f3ff;
+      --success: #059669;
+      --success-light: #ecfdf5;
+      --warning: #d97706;
+      --warning-light: #fffbeb;
+      --danger: #dc2626;
+      --border: #e2e8f0;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding-bottom: 60px; }
+
+    .navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .nav-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+    .role-buttons { display: flex; gap: 8px; }
+    .role-btn { padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border); background: #fff; cursor: pointer; }
+    .role-btn.active-student { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .role-btn.active-teacher { background: var(--teacher-color); color: #fff; border-color: var(--teacher-color); }
+
+    .container { max-width: 860px; margin: 24px auto; padding: 0 16px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); }
+
+    .source-nav-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .source-selector { font-size: 0.9rem; font-weight: 700; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; max-width: 380px; }
+    .jump-input { width: 70px; padding: 6px; border: 1px solid var(--border); border-radius: 6px; text-align: center; font-weight: 700; }
+
+    .topic-tag { display: inline-block; font-size: 0.8rem; font-weight: 700; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+    .source-header { font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 1.1rem; }
+    .source-body { background-color: #fffbeb; border: 1px solid #fde68a; padding: 18px; border-radius: 8px; font-size: 0.95rem; color: #78350f; white-space: pre-line; line-height: 1.7; }
+
+    .step-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+    .step-tab-btn { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: #fff; font-size: 0.85rem; font-weight: 700; color: var(--text-sub); cursor: pointer; text-align: center; }
+    .step-tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .step-tab-btn.completed { border-color: var(--success); color: var(--success); }
+
+    textarea { width: 100%; min-height: 130px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; resize: vertical; outline: none; }
+    textarea:focus { border-color: var(--primary); }
+
+    .btn-row { display: flex; justify-content: space-between; margin-top: 18px; gap: 10px; }
+    button { padding: 10px 18px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; border: none; }
+    .btn-primary { background-color: var(--primary); color: #fff; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-sub { background-color: var(--border); color: var(--text-main); }
+    .btn-action { background-color: var(--warning); color: #fff; padding: 6px 12px; font-size: 0.85rem; }
+    .btn-action:hover { background-color: #b45309; }
+    .btn-copy { background-color: var(--success); color: #fff; }
+    .btn-danger { background-color: var(--danger); color: #fff; }
+
+    .score-badge { display: inline-block; background-color: #dbeafe; color: #1e40af; font-size: 1.25rem; font-weight: 800; padding: 8px 20px; border-radius: 8px; }
+    .report-block { border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 16px; background: #fff; }
+    .guide-box { background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 10px 12px; margin-top: 8px; font-size: 0.9rem; color: #991b1b; }
+    .model-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 12px; margin-top: 10px; font-size: 0.92rem; color: #166534; line-height: 1.6; }
+    .seteuk-box { background-color: var(--teacher-light); border: 1px solid #ddd6fe; padding: 16px; border-radius: 8px; color: #4c1d95; font-size: 0.95rem; line-height: 1.7; }
+
+    .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .student-table th, .student-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.9rem; }
+    .student-table th { background: #f8fafc; color: var(--text-sub); font-weight: 700; }
+    .student-table tr:hover td { background-color: #f1f5f9; cursor: pointer; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-title">사료로 키우는 한국사 문해력</div>
+    <div class="role-buttons">
+      <button type="button" class="role-btn active-student" id="btnRoleStudent" onclick="switchRole('student')">학생 모드</button>
+      <button type="button" class="role-btn" id="btnRoleTeacher" onclick="switchRole('teacher')">교사 관리 모드 🔒</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ==================== [학생 화면] ==================== -->
+    <div id="studentContainer">
+
+      <!-- 인적사항 카드 (최초 등록) -->
+      <section class="card" id="studentInfoCard">
+        <h2 style="font-size: 1.25rem; margin-bottom: 6px;">학생 인적사항 등록</h2>
+        <p style="font-size: 0.88rem; color: var(--text-sub);">학년, 반, 번호, 이름을 입력하고 탐구를 시작해 주세요.</p>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px;">
+          <div><label style="font-size:0.85rem; font-weight:600;">학년</label><input type="number" id="grade" value="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
+          <div><label style="font-size:0.85rem; font-weight:600;">반</label><input type="number" id="sClass" value="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
+          <div><label style="font-size:0.85rem; font-weight:600;">번호</label><input type="number" id="sNum" value="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
+          <div><label style="font-size:0.85rem; font-weight:600;">이름</label><input type="text" id="sName" value="홍길동" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" style="margin-left:auto;" onclick="confirmStudentInfo()">탐구 시작하기</button>
+        </div>
+      </section>
+
+      <!-- 상시 사료 컨트롤러 및 본문 카드 -->
+      <section class="card hidden" id="sourceCard">
+        <div class="source-nav-bar">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-weight: 700; color: var(--primary); font-size: 0.9rem;">사료 이동:</span>
+            <select class="source-selector" id="activeSourceSelect" onchange="changeSource(parseInt(this.value))"></select>
+            <input type="number" class="jump-input" id="jumpNumInput" placeholder="18~36" min="18" max="36" />
+            <button type="button" class="btn-sub" style="padding: 6px 10px;" onclick="jumpToSource()">이동</button>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button type="button" class="btn-sub" style="padding: 6px 12px;" onclick="navigateSource(-1)">◀ 이전 사료</button>
+            <button type="button" class="btn-sub" style="padding: 6px 12px;" onclick="navigateSource(1)">다음 사료 ▶</button>
+          </div>
+        </div>
+
+        <span class="topic-tag" id="currentSourceTopic"></span>
+        <div class="source-header" id="currentSourceHeader"></div>
+        <div class="source-body" id="currentSourceBody"></div>
+      </section>
+
+      <!-- 5단계 탐구 입력 카드 -->
+      <section class="card hidden" id="stepCard">
+        <div class="step-tabs" id="stepTabsBar"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h2 class="step-title" id="stepTitle" style="font-size: 1.15rem; font-weight: 700;"></h2>
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 3px 8px; border-radius: 4px;" id="stepRubricArea"></span>
+        </div>
+        <p class="step-desc" id="stepDesc" style="font-size: 0.9rem; color: var(--text-sub); margin-bottom: 12px;"></p>
+
+        <textarea id="answerInput" placeholder="사료를 꼼꼼히 살펴보고 생각을 구체적으로 적어보세요... (빈칸 제출 불가)"></textarea>
+
+        <div class="btn-row">
+          <button type="button" class="btn-sub" id="prevBtn" onclick="moveStep(-1)">이전 단계</button>
+          <button type="button" class="btn-primary" id="nextBtn" onclick="moveStep(1)">다음 단계</button>
+        </div>
+      </section>
+
+      <!-- 채점 결과 및 피드백 & 모범 답안 리포트 카드 -->
+      <section class="card hidden" id="studentFeedbackCard">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h2 style="font-size: 1.3rem; color: var(--primary);">📊 채점 결과 및 피드백 리포트</h2>
+          <span class="score-badge" id="studentScoreBadge">총점: 0점 / 100점</span>
+        </div>
+
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 14px; border-radius: 8px; color: #1e40af; margin-bottom: 18px; font-size: 0.95rem;">
+          💡 <strong>안내:</strong> 한 번 채점을 완료하여 이제 <strong>모범 답안</strong>을 확인할 수 있습니다! 
+          만점(25점)이 나오지 않은 영역은 <strong>[✏️ 이 단계만 바로 수정하기]</strong>를 눌러 내용을 보완한 뒤 만점에 도전해 보세요.
+        </div>
+
+        <div id="feedbackListContainer"></div>
+
+        <div class="btn-row" style="margin-top: 20px;">
+          <button type="button" class="btn-sub" onclick="backToStepCard()">답안 입력 화면으로 돌아가기</button>
+          <button type="button" class="btn-primary" onclick="reEvaluateCurrentAnswers()">전체 다시 채점하기</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ==================== [교사 관리 화면] ==================== -->
+    <div id="teacherContainer" class="hidden">
+      <div style="background-color: var(--teacher-light); border: 1px solid #ddd6fe; color: var(--teacher-color); padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; margin-bottom: 16px;">
+        🔒 교사 관리자 모드입니다. 학생들이 제출한 성취 점수와 세특 초안을 관리합니다.
+      </div>
+
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h2 style="font-size: 1.25rem;">학생 제출 목록 (<span id="submissionCount">0</span>건)</h2>
+          <button type="button" class="btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="clearAllData()">전체 데이터 초기화</button>
+        </div>
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>학번/이름</th>
+              <th>사료 번호/제목</th>
+              <th>총점</th>
+              <th>제출 일시</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="submissionTableBody"></tbody>
+        </table>
+      </section>
+
+      <section class="card hidden" id="teacherDetailCard">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h2 style="font-size: 1.3rem; color: var(--teacher-color);" id="detailStudentHeader">학생 상세 평가</h2>
+          <button type="button" class="btn-sub" onclick="closeDetailCard()">닫기</button>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--teacher-color);">✨ 생활기록부 세특 추천 초안</h3>
+          <div class="seteuk-box" id="teacherSeteukText"></div>
+          <div style="margin-top: 8px; text-align: right;">
+            <button type="button" class="btn-copy" onclick="copyTeacherSeteuk()">세특 문구 복사하기</button>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size: 1.05rem; margin-bottom: 8px;">📝 학생 작성 답안 및 평가 내역</h3>
+          <div id="teacherDetailAnswers"></div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    // 18번부터 36번까지 사료 데이터 및 모범 답안
+    const historySources = [
+      {
+        id: 18,
+        topic: "1910년대 일제의 식민 통치",
+        title: "사료 18: 보통학교 교원의 제복과 패검 규정 (추가 자료)",
+        keywords: ["교원", "제복", "패검", "칼", "무단통치", "위압감"],
+        content: `제1조 조선 총독부 소속 관립 및 공립 학교의 교원 및 직원은 제복을 착용하고 칼(패검)을 차야 한다.\n제2조 교원의 복제 및 패검에 관한 규정은 별도의 훈령으로 정한다.\n- 「조선총독부 훈령」 (1911) -`,
+        modelAnswers: [
+          "일제 강점기 보통학교 교원과 직원이 의무적으로 제복을 착용하고 칼(패검)을 차도록 규정했음을 알 수 있다.",
+          "1910년대 일제의 헌병 경찰 통치(무단 통치) 하에서 교원에게 군사적 복장과 무기를 갖추게 하여 학생들에게 위압감과 공포심을 조성하고 식민 지배에 순종시키기 위함이다.",
+          "일제 당국은 무력과 공포를 통해 식민지 교육을 군사적으로 장악하려 했고, 조선인 학생과 학부모들은 학교에서조차 심각한 억압과 공포를 느껴야 했다.",
+          "사료에서 '교원 및 직원은 제복을 착용하고 칼(패검)을 차야 한다'라는 구절을 통해 교육 현장까지 군사 통제가 직접 관철되었음을 명확히 증명할 수 있다.",
+          "교육이 정권의 강압과 통제의 도구로 악용되었을 때의 위험성을 경고하며, 민주주의 사회에서 교육의 자율성과 인권 존중의 가치가 얼마나 중요한지 일깨워준다."
+        ]
+      },
+      {
+        id: 19,
+        topic: "1910년대 일제의 경제 수탈",
+        title: "사료 19: 토지조사령과 신고주의 원칙 (대표 자료)",
+        keywords: ["토지조사령", "신고", "소유권", "기한", "총독부", "약탈"],
+        content: `제1조 토지의 소유자는 조선 총독이 정하는 기간 내에 주소, 씨명 및 소유지의 소재, 결수, 지목을 임시 토지조사국장에게 신고하여야 한다.\n제4조 토지의 소유권은 사판(査定) 또는 재결(裁決)에 의하여 확정된다. 기한 내에 신고하지 않은 토지는 국유지로 편입한다.\n- 「토지조사령」(1912. 8. 13.) -`,
+        modelAnswers: [
+          "토지 소유자가 정해진 기간 내에 주소, 지목 등을 직접 신고해야만 소유권을 인정받을 수 있고, 미신고 토지는 국유지로 편입된다는 사실이다.",
+          "일제가 식민 통치에 필요한 안정적인 지세(재정)를 확보하고, 미신고 토지와 황실·문중 소유 토지를 약탈하여 일본인 이주민에게 불하하기 위해 실시되었다.",
+          "일제 당국은 근대적 소유권 확립을 명분으로 내세웠으나, 농민들은 복잡한 절차와 정보 부족, 총독부에 대한 불신으로 조상 대대로 물려받은 토지를 빼앗길 위기에 처했다.",
+          "'조선 총독이 정하는 기간 내에... 신고하여야 한다', '기한 내에 신고하지 않은 토지는 국유지로 편입한다'라는 구절에서 엄격한 기한부 신고주의가 약탈의 수단이었음을 알 수 있다.",
+          "제도와 법률이 권력의 이익을 위해 악용될 때 힘없는 민중의 기본권이 침해될 수 있음을 보여주며, 절차적 공정성과 시민 권리 보호의 중요성을 시사한다."
+        ]
+      },
+      {
+        id: 20,
+        topic: "1910년대 일제의 경제 수탈",
+        title: "사료 20: 동양척식주식회사와 농민 수탈 (추가 자료)",
+        keywords: ["동양척식주식회사", "이민", "소작농", "소작료", "이주", "척식"],
+        content: `본 회사의 목적은 조선의 척식 사업을 경영함에 있다. 회사는 국유 토지를 불하받아 일본인 농민을 이주시키고, 농업에 필요한 자금을 융통하며 토지의 개량 및 매매를 담당한다. 조선인 소작농에게는 고율의 소작료를 징수하여 이익을 배당한다.\n- 「동양척식주식회사법」(1908) -`,
+        modelAnswers: [
+          "동양척식주식회사가 토지를 불하받아 일본인 농민 이민을 장려하고, 조선 소작농에게 고율의 소작료를 징수하는 국책 회사라는 사실이다.",
+          "토지조사사업으로 확보한 대규모 토지를 관리하고 일본 본국의 식량 및 농민 문제를 해결하기 위해 설립되었다.",
+          "일제는 조선의 척식을 위한다는 명분을 내세웠으나, 실제 조선 농민들은 고율의 소작료로 인해 영락한 소작농이나 유랑민으로 전락하였다.",
+          "'국유 토지를 불하받아 일본인 농민을 이주시키고', '고율의 소작료를 징수'라는 구절에서 식민지 경제 수탈 기구의 본질이 드러난다.",
+          "국가 권력과 결탁한 거대 독점 자본이 식민지 민중을 착취한 사례로, 공정한 경제 질서와 사회적 약자 보호의 필요성을 일깨운다."
+        ]
+      }
+    ];
+
+    for (let i = 21; i <= 36; i++) {
+      historySources.push({
+        id: i,
+        topic: "일제 강점기 역사 사료 탐구",
+        title: `사료 ${i}: 한국사 탐구 사료 ${i}번`,
+        keywords: ["역사", "사실", "배경", "원인", "의의", "교훈"],
+        content: `[사료 제${i}호 원문]\n해당 단원의 역사 사료 텍스트입니다. 학생들은 5단계 문해력 사고 과정을 통해 이를 분석합니다.`,
+        modelAnswers: [
+          `[${i}번 1단계 모범 답안] 사료에서 제시된 핵심 사건과 정책, 인물의 행위 등 명확한 역사적 사실을 구체적으로 서술함.`,
+          `[${i}번 2단계 모범 답안] 사건이 발생하게 된 당시 국내외 시대적 배경과 인과관계를 입체적으로 설명함.`,
+          `[${i}번 3단계 모범 답안] 당시 지배 집단과 피지배 민족, 혹은 관련 주체들의 상반된 입장과 관점을 서술함.`,
+          `[${i}번 4단계 모범 답안] '사료 속 핵심 문구'를 직접 큰따옴표로 인용하여 자신의 판단 근거를 명확히 제시함.`,
+          `[${i}번 5단계 모범 답안] 이 사료가 한국사에서 지니는 역사적 교훈과 오늘날 우리 사회에 주는 시사점을 논리적으로 밝힘.`
+        ]
+      });
+    }
+
+    const steps = [
+      { num: 1, title: "1단계: 무슨 일이 있었는가?", desc: "이 사료에서 알 수 있는 구체적인 역사적 사실을 작성하세요.", rubricKey: "사료 이해" },
+      { num: 2, title: "2단계: 왜 그런 일이 일어났는가?", desc: "이 사건이 일어난 역사적 배경과 원인을 당시 상황과 연결하여 작성하세요.", rubricKey: "맥락 분석" },
+      { num: 3, title: "3단계: 당시 사람들은 어떻게 생각했는가?", desc: "사료에 드러난 당시 주체들의 입장과 관점을 찾아 설명하세요.", rubricKey: "사료 이해" },
+      { num: 4, title: "4단계: 나는 어떤 근거로 판단하는가?", desc: "자신의 판단을 뒷받침하는 사료 속 구체적인 표현이나 구절을 인용하세요.", rubricKey: "근거 활용" },
+      { num: 5, title: "5단계: 오늘 우리 사회에는 어떤 의미가 있는가?", desc: "이 사료가 한국사에서 가지는 의의와 오늘날 우리 사회에 주는 교훈을 작성하세요.", rubricKey: "역사적 해석" }
+    ];
+
+    let currentSourceId = 18;
+    let currentIdx = 0;
+    let studentInfo = {};
+    const studentAnswersBySource = {};
+    // [요구사항 1] 사료별 최초 1회 채점 완료 여부 추적 (채점 전엔 모범 답안 은닉)
+    const submittedOnceBySource = {};
+
+    function initSourceSelect() {
+      const activeSelect = document.getElementById("activeSourceSelect");
+      activeSelect.innerHTML = historySources.map(s => 
+        `<option value="${s.id}">${s.id}번. ${s.title}</option>`
+      ).join("");
+    }
+
+    function confirmStudentInfo() {
+      const grade = document.getElementById("grade").value.trim();
+      const sClass = document.getElementById("sClass").value.trim();
+      const sNum = document.getElementById("sNum").value.trim();
+      const sName = document.getElementById("sName").value.trim();
+
+      if (!grade || !sClass || !sNum || !sName) {
+        alert("학생 정보를 모두 입력해 주세요.");
+        return;
+      }
+
+      studentInfo = { grade, sClass, sNum, name: sName };
+      document.getElementById("studentInfoCard").classList.add("hidden");
+      document.getElementById("sourceCard").classList.remove("hidden");
+      document.getElementById("stepCard").classList.remove("hidden");
+
+      initSourceSelect();
+      changeSource(18);
+    }
+
+    function changeSource(sourceId) {
+      saveCurrentStepAnswer();
+      currentSourceId = sourceId;
+      document.getElementById("activeSourceSelect").value = sourceId;
+      document.getElementById("jumpNumInput").value = sourceId;
+
+      const sourceObj = historySources.find(s => s.id === sourceId);
+      document.getElementById("currentSourceTopic").innerText = `주제: ${sourceObj.topic}`;
+      document.getElementById("currentSourceHeader").innerText = sourceObj.title;
+      document.getElementById("currentSourceBody").innerText = sourceObj.content;
+
+      if (!studentAnswersBySource[currentSourceId]) {
+        studentAnswersBySource[currentSourceId] = Array(steps.length).fill("");
+      }
+
+      document.getElementById("studentFeedbackCard").classList.add("hidden");
+      document.getElementById("stepCard").classList.remove("hidden");
+
+      currentIdx = 0;
+      renderStepTabs();
+      renderStep();
+    }
+
+    function navigateSource(dir) {
+      const nextId = currentSourceId + dir;
+      if (nextId < 18 || nextId > 36) {
+        alert(nextId < 18 ? "첫 번째 사료(18번)입니다." : "마지막 사료(36번)입니다.");
+        return;
+      }
+      changeSource(nextId);
+    }
+
+    function jumpToSource() {
+      const num = parseInt(document.getElementById("jumpNumInput").value);
+      if (num >= 18 && num <= 36) {
+        changeSource(num);
+      } else {
+        alert("18번부터 36번 사이의 숫자를 입력해 주세요.");
+      }
+    }
+
+    function saveCurrentStepAnswer() {
+      if (!studentAnswersBySource[currentSourceId]) {
+        studentAnswersBySource[currentSourceId] = Array(steps.length).fill("");
+      }
+      studentAnswersBySource[currentSourceId][currentIdx] = document.getElementById("answerInput").value.trim();
+    }
+
+    function renderStepTabs() {
+      const bar = document.getElementById("stepTabsBar");
+      const currentAns = studentAnswersBySource[currentSourceId] || [];
+      bar.innerHTML = steps.map((s, idx) => {
+        const isFilled = currentAns[idx] && currentAns[idx].length > 0;
+        const activeClass = idx === currentIdx ? "active" : (isFilled ? "completed" : "");
+        return `<button type="button" class="step-tab-btn ${activeClass}" onclick="jumpToStep(${idx})">${idx + 1}단계</button>`;
+      }).join("");
+    }
+
+    // [요구사항 2] 탭 이동 시에도 현재 단계 빈칸 검증
+    function jumpToStep(idx) {
+      const currentVal = document.getElementById("answerInput").value.trim();
+      if (!currentVal && idx !== currentIdx) {
+        alert("현재 단계를 작성해야 다른 단계로 이동할 수 있습니다. (빈칸 이동 불가)");
+        document.getElementById("answerInput").focus();
+        return;
+      }
+      saveCurrentStepAnswer();
+      currentIdx = idx;
+      renderStepTabs();
+      renderStep();
+    }
+
+    function renderStep() {
+      const s = steps[currentIdx];
+      document.getElementById("stepTitle").innerText = s.title;
+      document.getElementById("stepDesc").innerText = s.desc;
+      document.getElementById("stepRubricArea").innerText = s.rubricKey;
+
+      const currentAnswers = studentAnswersBySource[currentSourceId] || Array(steps.length).fill("");
+      document.getElementById("answerInput").value = currentAnswers[currentIdx] || "";
+
+      document.getElementById("prevBtn").classList.toggle("hidden", currentIdx === 0);
+      document.getElementById("nextBtn").innerText = currentIdx === steps.length - 1 ? "전체 채점 및 결과 확인" : "다음 단계";
+      renderStepTabs();
+      document.getElementById("answerInput").focus();
+    }
+
+    // [요구사항 2] 다음 단계 이동 및 최종 제출 시 빈칸 엄격 방지
+    function moveStep(dir) {
+      const val = document.getElementById("answerInput").value.trim();
+      
+      if (dir === 1) {
+        if (!val) {
+          alert("답변이 비어 있습니다. 내용을 작성해야 다음으로 넘어갈 수 있습니다.");
+          document.getElementById("answerInput").focus();
+          return;
+        }
+        studentAnswersBySource[currentSourceId][currentIdx] = val;
+
+        // 마지막 5단계에서 제출 버튼 클릭 시 전체 1~5단계 빈칸 전수 조사
+        if (currentIdx === steps.length - 1) {
+          const ansList = studentAnswersBySource[currentSourceId];
+          for (let i = 0; i < steps.length; i++) {
+            if (!ansList[i] || ansList[i].trim() === "") {
+              alert(`${i + 1}단계 답변이 작성되지 않았습니다. 모든 단계를 빠짐없이 작성해야 채점받을 수 있습니다.`);
+              jumpToStep(i);
+              return;
+            }
+          }
+          evaluateAndShowFeedback();
+          return;
+        }
+      } else {
+        studentAnswersBySource[currentSourceId][currentIdx] = val;
+      }
+
+      currentIdx += dir;
+      renderStep();
+    }
+
+    // 4대 영역 루브릭 정밀 채점 (25/20/15/10점 구간)
+    function runEvaluation(ansList, sourceObj) {
+      const keywords = sourceObj.keywords;
+      const hasKeywords = (text) => keywords.some(k => text.includes(k));
+
+      // 1) 사료 이해 (1단계 + 3단계) - 25점
+      const uText = ansList[0] + " " + ansList[2];
+      let s1 = 15, d1 = "사료의 주요 역사적 사실을 중심으로 파악하여 기본 내용을 서술함.", g1 = "";
+      if (uText.length >= 70 && hasKeywords(uText)) {
+        s1 = 25; d1 = "사료의 핵심 사건·정책·인물 등 역사적 사실을 정확하고 구체적으로 파악하여 체계적으로 서술함.";
+        g1 = "만점입니다! 역사적 사실과 당시 인물들의 관점이 완벽하게 서술되었습니다.";
+      } else if (uText.length >= 40) {
+        s1 = 20; d1 = "사료의 핵심 역사적 사실을 대체로 정확하게 파악하여 적절하게 서술함.";
+        g1 = `사료 속 핵심 단어(${keywords.slice(0, 3).join(", ")})를 추가하여 3단계 관점 서술을 한 문장 더 구체화해 보세요.`;
+      } else {
+        s1 = 10; d1 = "사료에서 확인할 수 있는 기초적인 역사적 사실을 찾아 서술함.";
+        g1 = "내용이 너무 짧습니다. 사료 원문에서 확인되는 사실을 2문장 이상 구체적으로 늘려 적어보세요.";
+      }
+
+      // 2) 맥락 분석 (2단계) - 25점
+      const cText = ansList[1];
+      let s2 = 15, d2 = "사건의 주요 배경이나 관점을 중심으로 역사적 상황과 관련지어 설명함.", g2 = "";
+      if (cText.length >= 50 && (cText.includes("배경") || cText.includes("원인") || hasKeywords(cText))) {
+        s2 = 25; d2 = "사건의 원인·배경과 당시 주체의 입장·관점을 종합하여 역사적 맥락 속에서 논리적으로 분석함.";
+        g2 = "만점입니다! 사건이 일어난 시대적 배경과 인과관계를 훌륭하게 연결했습니다.";
+      } else if (cText.length >= 30) {
+        s2 = 20; d2 = "사건의 원인·배경과 관점을 파악하여 역사적 맥락과 적절하게 연결함.";
+        g2 = "사건이 일어난 시대적 배경을 한 걸음 더 깊이 파고들어, '일제의 궁극적 목적'을 함께 적어보세요.";
+      } else {
+        s2 = 10; d2 = "사건과 관련된 기본적인 배경 또는 관점을 확인하여 설명함.";
+        g2 = "사건의 배경 설명이 미흡합니다. 모범 답안을 확인하고 당시 시대 상황을 보충해 보세요.";
+      }
+
+      // 3) 근거 활용 (4단계) - 25점
+      const eText = ansList[3];
+      let s3 = 15, d3 = "사료에서 관련 내용을 찾아 근거로 활용하여 자신의 판단을 설명함.", g3 = "";
+      const hasQuote = eText.includes('"') || eText.includes("'") || eText.includes("「") || eText.includes("『");
+      if (eText.length >= 40 && hasQuote) {
+        s3 = 25; d3 = "자신의 판단을 뒷받침하는 구체적이고 적절한 사료 근거를 제시하고 근거와 판단의 관계를 명확하게 설명함.";
+        g3 = "만점입니다! 사료 속 표현을 직접 인용하며 설득력 있는 근거를 마련했습니다.";
+      } else if (eText.length >= 20) {
+        s3 = 20; d3 = "사료의 적절한 내용을 근거로 제시하고 자신의 판단과 연결하여 설명함.";
+        g3 = "사료 본문에서 내 주장을 입증하는 핵심 문구를 큰따옴표(\" \")로 직접 인용해 보세요.";
+      } else {
+        s3 = 10; d3 = "사료의 기본적인 표현이나 내용을 찾아 자신의 판단의 근거로 제시함.";
+        g3 = "사료 속 인용구가 전혀 없습니다. 사료의 표현을 직접 따옴표로 가져와 근거로 제시하세요.";
+      }
+
+      // 4) 역사적 해석 (5단계) - 25점
+      const hText = ansList[4];
+      let s4 = 15, d4 = "사료에서 확인할 수 있는 주요 역사적 의미를 중심으로 설명함.", g4 = "";
+      if (hText.length >= 50 && (hText.includes("의의") || hText.includes("교훈") || hText.includes("오늘날") || hText.includes("사회") || hText.includes("가치"))) {
+        s4 = 25; d4 = "사료가 보여 주는 사건·변화의 역사적 의미를 당시의 맥락과 연결하여 타당하고 논리적으로 해석하여 서술함.";
+        g4 = "만점입니다! 역사적 의의를 오늘날 우리 삶과 사회의 가치로 깊이 있게 확장했습니다.";
+      } else if (hText.length >= 30) {
+        s4 = 20; d4 = "사료의 역사적 의미를 파악하고 당시의 상황과 연결하여 적절하게 해석함.";
+        g4 = "단순한 역사 사실에 그치지 않고, '오늘날 우리 사회에 주는 교훈'을 추가해 보세요.";
+      } else {
+        s4 = 10; d4 = "사료가 보여 주는 기본적인 역사적 의미를 찾아 서술함.";
+        g4 = "현대적 의미가 빠져 있습니다. 모범 답안의 역사적 교훈을 참고하여 생각을 덧붙여 보세요.";
+      }
+
+      const total = s1 + s2 + s3 + s4;
+      return {
+        scores: [
+          { area: "사료 이해 (1단계, 3단계)", score: s1, desc: d1, guide: g1, stepIdxs: [0, 2] },
+          { area: "맥락 분석 (2단계)", score: s2, desc: d2, guide: g2, stepIdxs: [1] },
+          { area: "근거 활용 (4단계)", score: s3, desc: d3, guide: g3, stepIdxs: [3] },
+          { area: "역사적 해석 (5단계)", score: s4, desc: d4, guide: g4, stepIdxs: [4] }
+        ],
+        total
+      };
+    }
+
+    function buildSeteuk(name, sourceObj, evalResult) {
+      const scores = evalResult.scores;
+      let txt = `'사료로 배우는 한국사' 활동에서 [${sourceObj.title}] 사료를 심도 있게 분석함. `;
+      if (scores[0].score === 25) txt += `사료 속 핵심 역사 사실과 인물의 관점을 정확히 도출하여 체계화함. `;
+      else txt += `사료의 주요 사실을 성실히 파악함. `;
+      if (scores[1].score >= 20 && scores[2].score >= 20) txt += `역사적 인과관계를 입체적으로 분석하고 사료의 핵심 구절을 결정적 근거로 제시함. `;
+      else txt += `역사적 배경을 이해하고 구절을 인용하여 설명함. `;
+      if (scores[3].score === 25) txt += `나아가 사건의 의의를 오늘날의 평화와 민주주의 가치로 확장하여 해석하는 뛰어난 역사적 통찰력을 보임.`;
+      else txt += `사료의 역사적 의의와 교훈을 되새기며 중요성을 인식함.`;
+      return txt;
+    }
+
+    // 채점 및 결과 피드백 렌더링
+    function evaluateAndShowFeedback() {
+      saveCurrentStepAnswer();
+      const currentAns = studentAnswersBySource[currentSourceId];
+      const sourceObj = historySources.find(s => s.id === currentSourceId);
+
+      // [핵심 1] 1회 채점 완료 플래그 기록 -> 이제부터 모범 답안이 상시 공개됨
+      submittedOnceBySource[currentSourceId] = true;
+
+      const evalResult = runEvaluation(currentAns, sourceObj);
+      const seteuk = buildSeteuk(studentInfo.name, sourceObj, evalResult);
+
+      const record = {
+        id: Date.now(),
+        student: studentInfo,
+        sourceId: currentSourceId,
+        sourceTitle: sourceObj.title,
+        answers: [...currentAns],
+        evalResult,
+        seteuk,
+        date: new Date().toLocaleString("ko-KR")
+      };
+      const list = JSON.parse(localStorage.getItem("korea_history_submissions_smart") || "[]");
+      list.push(record);
+      localStorage.setItem("korea_history_submissions_smart", JSON.stringify(list));
+
+      document.getElementById("stepCard").classList.add("hidden");
+      document.getElementById("studentFeedbackCard").classList.remove("hidden");
+
+      document.getElementById("studentScoreBadge").innerText = `총점: ${evalResult.total}점 / 100점`;
+
+      // 4대 영역 피드백 리스트 출력
+      document.getElementById("feedbackListContainer").innerHTML = evalResult.scores.map(s => {
+        const isPerfect = s.score === 25;
+
+        // 관련 단계별 학생 답안 및 [1회 제출 완료 후에만 공개되는 모범 답안]
+        const stepsContent = s.stepIdxs.map(idx => `
+          <div style="margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:700; color:var(--text-main); font-size:0.92rem;">${steps[idx].title}</span>
+              ${!isPerfect ? `<button type="button" class="btn-action" onclick="modifySpecificStep(${idx})">✏️ ${idx + 1}단계만 수정하기</button>` : ''}
+            </div>
+            <div style="font-size:0.92rem; color:#334155; margin-top:6px; background:#f8fafc; padding:8px; border-radius:6px;">
+              <strong>[내 작성 답안]:</strong> ${currentAns[idx] || '(작성 내용 없음)'}
+            </div>
+            <!-- 채점 완료 후이므로 정답이 항상 공개됨 -->
+            <div class="model-box">
+              <strong>💡 ${idx + 1}단계 모범 답안 가이드:</strong><br>${sourceObj.modelAnswers[idx]}
+            </div>
+          </div>
+        `).join("");
+
+        return `
+          <div class="report-block" style="border-left: 5px solid ${isPerfect ? 'var(--success)' : 'var(--warning)'};">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:800; color:var(--primary); font-size:1.05rem;">📌 ${s.area}</span>
+              <span style="font-weight:800; color:${isPerfect ? 'var(--success)' : 'var(--danger)'}; font-size:1.15rem;">
+                ${s.score}점 / 25점
+              </span>
+            </div>
+            <div style="font-size:0.88rem; color:#64748b; margin-top:2px;">기준: ${s.desc}</div>
+            
+            <div class="${isPerfect ? 'model-box' : 'guide-box'}" style="margin-top:10px;">
+              <strong>${isPerfect ? '🎉' : '⚠️'} 피드백:</strong> ${s.guide}
+            </div>
+
+            ${stepsContent}
+          </div>
+        `;
+      }).join("");
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 감점된 단계만 원클릭 수정 이동
+    function modifySpecificStep(stepIndex) {
+      document.getElementById("studentFeedbackCard").classList.add("hidden");
+      document.getElementById("stepCard").classList.remove("hidden");
+      currentIdx = stepIndex;
+      renderStepTabs();
+      renderStep();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToStepCard() {
+      document.getElementById("studentFeedbackCard").classList.add("hidden");
+      document.getElementById("stepCard").classList.remove("hidden");
+      renderStep();
+    }
+
+    // 전체 다시 채점 시에도 빈칸 유효성 검사
+    function reEvaluateCurrentAnswers() {
+      saveCurrentStepAnswer();
+      const ansList = studentAnswersBySource[currentSourceId];
+      for (let i = 0; i < steps.length; i++) {
+        if (!ansList[i] || ansList[i].trim() === "") {
+          alert(`${i + 1}단계 답변이 비어 있습니다. 모든 단계를 채워 넣어야 다시 채점받을 수 있습니다.`);
+          modifySpecificStep(i);
+          return;
+        }
+      }
+      evaluateAndShowFeedback();
+    }
+
+    // 교사 모드 전환 (비밀번호: 1234)
+    function switchRole(role) {
+      if (role === "teacher") {
+        const pwd = prompt("교사 인증 비밀번호를 입력해 주세요 (기본: 1234):");
+        if (pwd !== "1234") {
+          alert("비밀번호가 일치하지 않습니다.");
+          return;
+        }
+        document.getElementById("btnRoleTeacher").classList.add("active-teacher");
+        document.getElementById("btnRoleStudent").classList.remove("active-student");
+        document.getElementById("studentContainer").classList.add("hidden");
+        document.getElementById("teacherContainer").classList.remove("hidden");
+        renderTeacherDashboard();
+      } else {
+        document.getElementById("btnRoleStudent").classList.add("active-student");
+        document.getElementById("btnRoleTeacher").classList.remove("active-teacher");
+        document.getElementById("teacherContainer").classList.add("hidden");
+        document.getElementById("studentContainer").classList.remove("hidden");
+      }
+    }
+
+    function renderTeacherDashboard() {
+      const list = JSON.parse(localStorage.getItem("korea_history_submissions_smart") || "[]");
+      document.getElementById("submissionCount").innerText = list.length;
+      const tbody = document.getElementById("submissionTableBody");
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-sub); padding:24px;">제출된 학생 데이터가 없습니다.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => `
+        <tr onclick="viewTeacherDetail(${item.id})">
+          <td style="font-weight:700;">${item.student.grade}-${item.student.sClass}-${item.student.sNum} ${item.student.name}</td>
+          <td>${item.sourceTitle}</td>
+          <td><span style="font-weight:800; color:var(--primary); font-size:1rem;">${item.evalResult.total}점</span></td>
+          <td style="color:var(--text-sub); font-size:0.85rem;">${item.date}</td>
+          <td><button type="button" class="btn-primary" style="padding:4px 10px; font-size:0.8rem;">상세/세특 보기</button></td>
+        </tr>
+      `).join("");
+    }
+
+    function viewTeacherDetail(id) {
+      const list = JSON.parse(localStorage.getItem("korea_history_submissions_smart") || "[]");
+      const item = list.find(x => x.id === id);
+      if (!item) return;
+
+      const detailCard = document.getElementById("teacherDetailCard");
+      detailCard.classList.remove("hidden");
+
+      document.getElementById("detailStudentHeader").innerText = 
+        `[상세 평가] ${item.student.name} 학생 - ${item.sourceTitle} (총점: ${item.evalResult.total}점 / 100점)`;
+
+      document.getElementById("teacherSeteukText").innerText = item.seteuk;
+
+      document.getElementById("teacherDetailAnswers").innerHTML = steps.map((s, idx) => `
+        <div style="border:1px solid var(--border); border-radius:6px; padding:10px; margin-bottom:8px;">
+          <div style="font-weight:700; color:var(--text-main); font-size:0.9rem;">${s.title}</div>
+          <div style="font-size:0.92rem; white-space:pre-wrap; margin-top:4px;">${item.answers[idx]}</div>
+        </div>
+      `).join("");
+
+      detailCard.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeDetailCard() {
+      document.getElementById("teacherDetailCard").classList.add("hidden");
+    }
+
+    function copyTeacherSeteuk() {
+      const txt = document.getElementById("teacherSeteukText").innerText;
+      navigator.clipboard.writeText(txt).then(() => {
+        alert("세특 초안이 복사되었습니다! NEIS에 바로 활용하세요.");
+      });
+    }
+
+    function clearAllData() {
+      if (confirm("정말로 모든 제출 데이터를 초기화하시겠습니까?")) {
+        localStorage.removeItem("korea_history_submissions_smart");
+        renderTeacherDashboard();
+        closeDetailCard();
+      }
+    }
+  </script>
+</body>
+</html>
