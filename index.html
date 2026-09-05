@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>사료로 키우는 한국사 문해력 (1차·2차 통합)</title>
+  <title>사료로 키우는 한국사 문해력 (학생별 답안 격리 보안 모드)</title>
   <style>
     :root {
       --primary: #1d4ed8;
@@ -26,7 +26,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
     body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding-bottom: 60px; }
 
-    /* 상단 네비게이션 바 */
     .navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .nav-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
     .nav-controls { display: flex; align-items: center; gap: 8px; }
@@ -39,7 +38,6 @@
     .container { max-width: 860px; margin: 24px auto; padding: 0 16px; }
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); }
 
-    /* 1차 / 2차 선택 탭 */
     .unit-selector-bar { display: flex; gap: 8px; margin-bottom: 16px; }
     .unit-tab-btn { flex: 1; padding: 12px 14px; border: 2px solid var(--border); border-radius: 8px; background: #fff; font-size: 0.95rem; font-weight: 800; color: var(--text-sub); cursor: pointer; text-align: center; transition: all 0.2s; }
     .unit-tab-btn.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
@@ -86,7 +84,7 @@
 </head>
 <body>
 
-  <!-- 상단 네비게이션 (어떤 화면에서도 처음으로 돌아갈 수 있는 버튼 추가) -->
+  <!-- 상단 네비게이션 -->
   <header class="navbar">
     <div class="nav-title">사료로 키우는 한국사 문해력</div>
     <div class="nav-controls">
@@ -101,16 +99,34 @@
     <!-- ==================== [학생 화면] ==================== -->
     <div id="studentContainer">
 
-      <!-- 1. 학생 기본 정보 입력 (1차 vs 2차 명칭 적용) -->
+      <!-- 1. 학생 기본 정보 입력 -->
       <section class="card" id="studentInfoCard">
-        <h2 style="font-size: 1.25rem; margin-bottom: 6px;">학생 인적사항 등록 및 학습 차수 선택</h2>
-        <p style="font-size: 0.88rem; color: var(--text-sub);">본인의 인적사항을 입력하고 탐구할 사료 차수를 선택하세요.</p>
+        <h2 style="font-size: 1.25rem; margin-bottom: 6px;">학생 인적사항 등록 및 본인 인증</h2>
+        <p style="font-size: 0.88rem; color: var(--text-sub);">
+          학생별로 작성 답안이 독립 관리됩니다. 다른 학생의 학번으로 변경 시 이전 학생의 작성 내용은 완전히 차단됩니다.
+        </p>
         
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px;">
-          <div><label style="font-size:0.85rem; font-weight:600;">학년</label><input type="number" id="grade" value="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
-          <div><label style="font-size:0.85rem; font-weight:600;">반</label><input type="number" id="sClass" value="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
-          <div><label style="font-size:0.85rem; font-weight:600;">번호</label><input type="number" id="sNum" value="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
-          <div><label style="font-size:0.85rem; font-weight:600;">이름</label><input type="text" id="sName" value="홍길동" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" /></div>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px;">
+          <div>
+            <label style="font-size:0.85rem; font-weight:600;">학년</label>
+            <input type="number" id="grade" placeholder="1" min="1" max="3" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" />
+          </div>
+          <div>
+            <label style="font-size:0.85rem; font-weight:600;">반</label>
+            <input type="number" id="sClass" placeholder="1" min="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" />
+          </div>
+          <div>
+            <label style="font-size:0.85rem; font-weight:600;">번호</label>
+            <input type="number" id="sNum" placeholder="1" min="1" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" />
+          </div>
+          <div>
+            <label style="font-size:0.85rem; font-weight:600;">이름</label>
+            <input type="text" id="sName" placeholder="홍길동" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" />
+          </div>
+          <div>
+            <label style="font-size:0.85rem; font-weight:700; color:var(--primary);">비밀번호 (4자리)</label>
+            <input type="password" id="sPin" placeholder="숫자 4자리" maxlength="4" style="width:100%; padding:8px; border:2px solid var(--primary); border-radius:6px;" />
+          </div>
         </div>
 
         <div style="margin-top: 16px;">
@@ -126,7 +142,7 @@
         </div>
 
         <div class="btn-row">
-          <button type="button" class="btn-primary" style="margin-left:auto;" onclick="confirmStudentInfo()">사료 탐구 시작하기</button>
+          <button type="button" class="btn-primary" style="margin-left:auto;" onclick="confirmStudentInfo()">본인 인증 및 탐구 시작</button>
         </div>
       </section>
 
@@ -202,7 +218,7 @@
     <!-- ==================== [교사 관리 화면] ==================== -->
     <div id="teacherContainer" class="hidden">
       <div style="background-color: var(--teacher-light); border: 1px solid #ddd6fe; color: var(--teacher-color); padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; margin-bottom: 16px;">
-        🔒 교사 관리자 모드입니다. 학생들이 1~36번 사료에 제출한 성취 점수와 세특 초안을 열람합니다.
+        🔒 교사 관리자 모드입니다. 학생들의 제출 기록, 등록된 기기 및 PIN 초기화, 세특 초안을 관리합니다.
       </div>
 
       <section class="card">
@@ -214,6 +230,7 @@
           <thead>
             <tr>
               <th>학번/이름</th>
+              <th>설정 PIN</th>
               <th>사료 번호/제목</th>
               <th>총점</th>
               <th>제출 일시</th>
@@ -250,8 +267,7 @@
     const historySources = [
       // 1차 (1~17번)
       {
-        id: 1, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 1, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 1: 파리 강화 회의에 제출된 서한 (대표 자료)",
         keywords: ["파리", "평화", "늑약", "무효", "윌슨", "정의", "주권"],
         content: `○ 유림 대표 곽종석, 김복한 등 137명이 파리 평화 회의에 참석하신 여러분께 삼가 글을 올립니다.\n아! 우리 한국도 천하 여러 나라 중 하나이니 국토는 3천 리요, 인구는 천만으로 4천여 년을 보존해 와 반도 문명의 칭호를 잃지 않았습니다....... 불행히 강한 이웃 나라가 임금을 협박하고 백성을 얽매어 늑약을 맺고, 국토를 빼앗고 왕위를 폐하였습니다....... 각국 대표께서 파리 평화 회의를 연다는 소식을 듣고 백성 모두가 기뻐하였습니다....... 이에 10년간 겪은 일을 모아 서신으로 보냅니다....... 각국 대표께서는 가엽게 여기고 잘 살피시어 공정하게 판단하시기 바랍니다.\n- 「파리장서」 -\n\n○ 한국 국민과 국가는 파리 강화 회의에서 1910년 8월 22일에 맺어진 조약을 폐기하거나 무효로 할 것을 요구합니다. 단 1명의 한국인, 당시 대한 제국 황제가 일본의 강압으로 '한국의 모든 권리와 주권을 일본 황제에게 완전하고 영구적으로' 넘겼습니다. 그때 한국의 인구는 1,500만 명이 넘었습니다.\n파리 강화 회의는 윌슨 대통령의 14개조 평화 원칙에 따라 참가국의 문제를 해결하기 위해 열리고 있습니다. 윌슨 대통령은 1918년 1월 8일 국회에서 회의의 모든 진행 과정을 관통하는 자명한 원칙이 '모든 국민과 국가의 정의의 원칙, 강하든 약하든 서로 동등하게 자유와 안전을 누릴 권리'라고 규정하였습니다........\n이 정의의 원칙은 일왕이 '한국의 모든 주권'을 지속적으로 행사하여 침해되고 있습니다. 이는 한국인과 국가의 동의를 받지 않았으며, 염원에 반하는 것입니다. 앞서 언급한 1910년 8월 22일의 조약을 무효로 선언하는 것이 파리 강화 회의의 권리이자 의무입니다.\n- 『파리 강화 회의에 제출한 한국 대표단의 청원』 -`,
@@ -264,8 +280,7 @@
         ]
       },
       {
-        id: 2, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 2, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 2: 윌슨의 14개조 평화 원칙 (추가 자료)",
         keywords: ["비밀외교", "항해", "무역", "군비", "식민지", "폴란드", "연합체제"],
         content: `1. 공개적으로 체결된 강화 조약 외에 어떠한 비밀 외교도 있을 수 없다. 외교는 항상 정직하고 공개적으로 진행되어야 한다.\n2. 평화 시와 전시를 막론하고 영해 밖에서 항해의 자유가 절대 보장되어야 한다.\n3. 가능한 모든 경제 장벽을 제거한다. 평화에 동의하고 평화 유지를 위해 협력하는 모든 국가 사이에 평등한 무역 조건을 확립한다.\n4. 각국의 군비는 상호 보장 아래 자국의 안보에 필요한 최소 수준으로 감축해야 한다.\n5. 식민지 주권 문제를 결정할 때, 관련된 주민들의 이익을 앞으로 지위가 결정될 정부의 정당한 권리 주장과 동등하게 중요한 것으로 다룬다는 원칙을 엄격히 준수한다.\n12. 현재 오스만 제국 내의 튀르크 민족이 차지한 영토의 주권을 확실히 보장한다.\n13. 독립된 폴란드인의 국가를 수립한다.\n14. 강대국과 약소국 모두의 정치적 독립과 영토 보전을 상호 보장하기 위해 특별한 협약하에 국가들 사이의 하나의 일반적인 연합 체제가 형성되어야 한다.`,
@@ -278,8 +293,7 @@
         ]
       },
       {
-        id: 3, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 3, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 3: 베르사유 조약의 체결 (추가 자료)",
         keywords: ["독일", "식민지", "무기", "잠수함", "손실", "배상금", "마르크"],
         content: `119. 독일은 해외 식민지에 관한 모든 권리와 소유권을 연합군과 그 협력국에 넘겨준다.\n170. 독일은 모든 무기, 군수품, 전쟁 물자의 수입, 제조, 수출이 엄격히 금지된다.\n191. 상업적 목적을 포함하여 독일에서는 모든 잠수함의 건조와 취득이 금지된다.\n231. 독일의 침략으로 연합군 및 연합국 정부, 그 국민이 입은 모든 손실과 손해를 독일과 그 동맹국이 책임진다.\n235. 최종 청구액이 확정되기 이전에, 독일은 200억 마르크 금화에 해당하는 금액을 1921년 4월까지 지불한다.`,
@@ -292,8 +306,7 @@
         ]
       },
       {
-        id: 4, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 4, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 4: 국제 연맹의 창설 (추가 자료)",
         keywords: ["국제협력", "평화", "안전", "규약", "중재재판소", "분쟁", "전쟁"],
         content: `국제 협력을 증진하고 국제 평화와 안전을 달성하기 위해 전쟁에 의지하지 않을 의무를 받아들이며, 국가 간의 개방적이고 정의롭고 명예로운 관계를 규정하며.........본 국제 연맹 규약에 동의합니다.\n제5조 특별히 규정된 경우를 제외하고, 총회 또는 이사회 회의의 결정은 모든 회원국의 동의를 받아야 한다.\n제12조 회원국들 사이에 평화를 위태롭게 하는 분쟁이 발생할 경우 반드시 중재 재판소에 회부한다.\n제16조 회원국이 취해진 결정을 거부하고 전쟁을 일으킬 경우, 이는 다른 모든 회원국에 대해 전쟁 행위를 저지른 것으로 간주된다.\n- 「국제 연맹 규약」 -`,
@@ -306,8 +319,7 @@
         ]
       },
       {
-        id: 5, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 5, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 5: 일본의 대중국 21개조 요구 (추가 자료)",
         keywords: ["산둥성", "남만주", "조차", "고문", "경찰", "병기", "우월한 지위"],
         content: `제1호 일본 정부 및 중국 정부는 동아시아의 평화를 유지하기를 원하며, 현존하는 양국의 선린 우호 관계를 더욱 공고히 하기 위하여 다음 조항을 체결한다.\n제1조 중국 정부는 독일이 산둥성에 조약, 기타 관계에 기초하여 누려온 모든 권리와 이익 등을 처분할 때, 앞으로 일본 정부가 독일 정부와 체결할 모든 협정을 승인할 것을 약속한다.\n제2조 중국 정부는 산둥성 및 그 연해 일대의 토지 및 도서를 어떤 명목으로든 다른 나라에 양도, 조차하지 않을 것임을 승낙한다.\n제2호 중국 정부는 일본국이 남만주 및 동부 내몽골에서 우월한 지위를 누려왔음을 인정하였다.\n제1조 양 조약국은 뤼순, 다롄의 조차 및 남만주, 안봉철도의 사용 기한을 모두 99년 연장하기로 약속한다.\n제2조 일본국 신민은 남만주 및 동부 내몽골에서 각종 상공업 건물 건설, 경작을 위해 필요한 토지를 임차하거나 소유할 수 있다.\n제5호 제1조 중국 중앙 정부에 일본인을 정치, 재정 및 군사 고문으로 임명한다.\n제3조 중국과 일본 사이에 분쟁이 있는 지역, 추후 필요하다고 여겨지는 지역의 경찰 업무를 중국과 일본이 합동으로 처리한다.\n제4조 일본에서 일정 수량 이상의 병기를 공급받거나 중국에 일본과 중국 합작의 병기창을 설립한다.`,
@@ -320,8 +332,7 @@
         ]
       },
       {
-        id: 6, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 6, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 6: 러시아 혁명과 식민지 독립 (추가 자료)",
         keywords: ["소비에트", "평등", "주권", "자결권", "특권폐지", "민족문제"],
         content: `소비에트 정부는 러시아 여러 민족의 문제를 다음 원칙에 따라 처리하기로 결정하였다.\n1. 러시아 여러 민족의 평등과 주권\n2. 러시아 여러 민족이 분리되어 독립 국가를 형성할 때까지 자유롭게 자결권을 가질 수 있는 권리\n3. 모든 국가 및 국가-종교적 특권과 제한의 폐지\n4. 러시아 영토에 거주하는 소수 민족과 인종 집단의 자유로운 발전\n이러한 원칙에 따른 구체적인 법령은 민족 문제 위원회가 설치되는 즉시 구체화될 것이다.\n- 『러시아 여러 민족의 권리 선언』 -`,
@@ -334,8 +345,7 @@
         ]
       },
       {
-        id: 7, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 7, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 7: 극동 인민 대표 회의의 결정 (추가 자료)",
         keywords: ["계급운동", "농업국", "민족운동", "임시정부", "독립달성", "여운형"],
         content: `현재의 조선에서는 상공업이 발달하지 않아 계급 운동은 시기상조이다. 따라서 조선은 농업국으로 일반 민중이 민족 운동에 공감하고 있다. 이에 계급 운동자는 그 독립운동을 후원하고 대한민국 임시 정부를 도와 독립 달성에 노력하여야 한다는 데 의견의 일치를 보았다.\n- 『몽양 여운형 전집』 -`,
@@ -348,8 +358,7 @@
         ]
       },
       {
-        id: 8, unit: 1,
-        topic: "제1차 세계 대전과 러시아 혁명",
+        id: 8, unit: 1, topic: "제1차 세계 대전과 러시아 혁명",
         title: "사료 8: 워싱턴 회의 (추가 자료)",
         keywords: ["중국", "주권", "영토", "기회균등", "9개국", "안정"],
         content: `미국, 벨기에, 영국, 중국, 프랑스, 이탈리아, 일본, 네덜란드, 포르투갈은 극동 정세 안정, 중국의 권익 보호, 기회 평등에 바탕한 중국과 다른 강대국 간의 교류 촉진을 위해 아래 조약을 체결한다.\n제1조 중국을 제외한 체약국은 다음 사항에 동의한다.\n(1) 중국의 주권, 독립, 영토 및 행정적 완전성을 존중한다.\n(2) 중국 스스로 효율적이고 안정적인 정부를 개발, 유지할 수 있도록 완전하고 방해받지 않는 기회를 제공한다.\n(3) 중국 영토에서 모든 국가가 상업, 산업상 기회균등의 원칙을 효율적으로 세우고 유지하기 위해 영향력을 행사한다.\n(4) 중국의 상황을 이용해 우호국 국민의 권리를 침해하는 특권을 추구하거나, 해당 국가의 안보에 해를 끼치는 행동을 하지 않는다.\n- 「9개국 조약」 -`,
@@ -362,8 +371,7 @@
         ]
       },
       {
-        id: 9, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 9, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 9: 조선 총독 관련 규정 (대표 자료)",
         keywords: ["총독", "일왕", "육해군", "정무", "총독부령", "정무총감"],
         content: `제1조 조선 총독부에 조선 총독을 둔다. 총독은 조선을 관할한다.\n제2조 총독은 일왕이 직접 임명한다. 육해군 대장으로 이를 충원한다.\n제3조 총독은 일왕에 직접 속하며 위임한 범위 내에서 육해군을 통솔하며 조선 방비의 일을 관장한다. 총독은 제반의 정무를 통괄하며 내각총리대신을 거쳐 상주하며 재가를 받는다.\n제4조 총독은 그 직권 또는 특별한 위임에 따라 조선 총독부령을 발한다. 여기에 1년 이하의 징역 또는 금고, 구류, 200원 이하의 벌금이나 과료의 벌칙을 붙일 수 있다.\n제8조 총독부에 정무총감을 둔다. 정무총감은 일왕이 직접 임명한다. 정무총감은 총독을 보좌해 총독부 업무를 총괄하고 각 부서의 사무를 감독한다.\n- 『조선 총독부 관보』(1910. 9. 30.) -`,
@@ -376,8 +384,7 @@
         ]
       },
       {
-        id: 10, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 10, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 10: 일제의 한국에 대한 시각 (추가 자료)",
         keywords: ["동화", "융합", "구미", "식민지", "인종", "데라우치"],
         content: `조선의 지위는 구미 제국의 식민지와 완전히 다르다. 구미의 식민지는 본국과 거리가 매우 떨어져 있고 토착민의 인종과 풍속이 본국인과 도저히 어우러지기 어렵다. 이를 타개하여 한 덩어리가 되게 하는 것은 불가능하니, 영구히 식민지로 남을 운명이다. 하지만 제국 본토(일본)와 조선의 관계는 이와 다르다. 지리적으로 인접하고 인종이 같으므로 융합과 동화에 어떠한 장애가 있다고 보지 않는다.\n- 데라우치 마사타케, 『조선 통치 3년간 성적』 -`,
@@ -390,8 +397,7 @@
         ]
       },
       {
-        id: 11, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 11, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 11: 일제의 한국 통치 방침 (추가 자료)",
         keywords: ["관리", "배제", "차별", "봉급", "검사", "박은식", "노예"],
         content: `저들이 총독부 관제를 실시하면서 소위 옛 한국 정부 관리를 모두 해산하였다. 일부 임용된 한국인은 겨우 287명인데, 총독부 행정 기관에는 한 사람도 없었다. 오직 이왕직(李王職) 직원, 중추원과 경학원 직원, 지방청 장관, 군수와 그 소속 부서 직원, 하급 관리, 서기·통역인 등뿐이다. 이 287명은 모두 지식의 수양이나 과학의 기능이 아니라, 순종하는 노예의 자격이 있는 자를 뽑았을 뿐이다.\n그들의 불문율의 제한은 다음과 같다.\n1. 가급적 한국인 관리는 등용하지 않는다.\n2. 부득이 한국인을 임용할 경우 과학, 기술이 있는 자는 반드시 배제한다.\n3. 한국인 관리에게는 중요한 지위를 주지 않는다.\n4. 한국인 고관의 봉급은 100원에 그치고, 판임관의 이력이 30원에 이르면 반드시 퇴직시킨다.\n5. 한국인은 재판소 검사로 채용하지 않는다.\n- 박은식, 『한국독립운동지혈사』 -`,
@@ -404,8 +410,7 @@
         ]
       },
       {
-        id: 12, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 12, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 12: 헌병 경찰제 (추가 자료)",
         keywords: ["경무총감부", "헌병", "치안유지", "군사경찰", "통감부"],
         content: `제1조 통감부 경찰 관서는 통감의 관리에 따라 한국의 경찰 사무를 관장한다.\n제2조 통감부 경찰 관서는 경무총감부, 경무부 및 경찰서로 한다.\n제3조 경무총감부는 경성에 두며 한국의 경찰 사무를 총괄하고 황궁 및 경성의 경찰 사무를 담당한다.\n제6조 경무총장은 한국 주차 헌병 대장을 맡은 육군 장성으로 임명한다. 경무총장은 경무총감부의 장으로 통감의 명령에 따라 업무를 총괄하고 경찰 관서의 직원을 지휘, 감독한다.\n제8조 경무부장은 각도의 헌병 대장을 맡은 육군 영관으로 임명한다.\n- 「통감부경찰관서관제」(1910. 6. 29.) -\n\n제1조 조선 주차 헌병은 치안 유지에 관한 경찰 및 군사 경찰 업무를 담당한다.\n- 「조선주차헌병조례」(1910. 9. 10.) -`,
@@ -418,8 +423,7 @@
         ]
       },
       {
-        id: 13, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 13, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 13: 범죄 즉결례의 적용 (추가 자료)",
         keywords: ["즉결", "경찰서장", "구류", "태형", "과료", "제령"],
         content: `제1조 경찰서장 또는 그 직무를 취급하는 자는 그 관할 구역 안의 다음 각호의 범죄를 즉결할 수 있다.\n1. 구류·태형 또는 과료형에 해당하는 죄\n2. 3월 이하의 징역 또는 100원 이하의 벌금이나 과료형에 처하여야 하는 도박죄 및 구류 또는 과료형에 처하여야 하는 죄\n3. 구재판소의 재판권에 속하는 사건으로 3월 이하의 징역형에 처하여야 하는 죄\n4. 구재판소의 재판권에 속하는 사건으로 3월 이하의 징역·금고 또는 구류·태형 또는 100원 이하의 벌금이나 과료형에 처하여야 하는 행정법규 위반의 죄\n- 『조선총독부제령』 10호(1910. 12. 15. 제정) -`,
@@ -432,8 +436,7 @@
         ]
       },
       {
-        id: 14, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 14, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 14: 경찰범 처벌 규칙 (추가 자료)",
         keywords: ["구류", "과료", "집회", "유언비어", "청원", "불온", "배회"],
         content: `제1조 다음의 각호에 해당하는 자는 구류 또는 과료에 처한다.\n2. 일정한 주거나 생업 없이 배회하는 자\n5. 협력, 기부를 강요하고 억지로 물품 구매를 요구하거나 기예를 보이거나 노동력을 공급해서 보수를 요구하는 자\n8. 단체 가입을 강요하는 자\n19. 함부로 대중을 모아 관공서에 청원 또는 진정을 하는 자\n20. 불온한 연설을 하거나 불온 문서, 도서, 시가를 게시, 반포, 낭독하거나 큰 소리로 읊는 자\n21. 남을 유혹하는 유언비어 또는 허위 보도를 하는 자\n30. 관공서의 소환에 이유 없이 응하지 않은 자\n32. 경찰 관서에서 특별히 지시, 명령한 사항을 위반한 자\n제2조 본령에서 규정한 위반 행위를 교사하거나 방조하는 자는 앞에 제시된 조항에 준하여 처벌할 수 있다. 단 상황에 따라 그 형을 면할 수 있다.\n- 「조선총독부법령」 제40호(1912. 3. 25.) -`,
@@ -446,8 +449,7 @@
         ]
       },
       {
-        id: 15, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 15, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 15: 정치 집회의 금지 (추가 자료)",
         keywords: ["정치", "집회", "금지", "구류", "과료", "경무총감부", "다중"],
         content: `당분간 정치에 관한 집회 및 옥외에서 다중의 집회를 금지한다. 본령을 위반하는 자는 구류 또는 과료에 처한다.\n- 『경무총감부령』 제3호(1910. 8. 23. 시행) -`,
@@ -460,8 +462,7 @@
         ]
       },
       {
-        id: 16, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 16, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 16: 조선 태형령 (추가 자료)",
         keywords: ["태형", "조선인", "비밀", "형판", "형틀", "볼기", "차별"],
         content: `○ 조선 태형령\n제1조 3개월 이하의 징역 또는 구류에 처해야 할 자는 그 사정에 따라 태형에 처할 수 있다.\n제7조 1. 태형은 30태 이하일 때는 한 번에 집행하며 30태가 증가할 때마다 1회가 추가된다.\n2. 태형의 집행은 하루 1회를 넘을 수 없다.\n제11조 태형은 감옥 또는 즉결 관서에서 비밀리에 행한다.\n제13조 이 영은 조선인에 한하여 적용한다.\n- 「조선총독부제령」 13호(1912. 3. 18. 제정) -\n\n○ 태형 집행 주의점\n제1조 태형을 받는 자의 양팔을 좌우로 벌리게 하여 형판에 묶고 형틀에 눕게 한 뒤 양다리도 같이 묶은 후 볼기 부분을 노출시켜 태형을 집행한다.\n제11조 태형장에 물을 준비하여 수시로 수형자가 물을 마실 수 있게 한다.\n제12조 집행 중에 수형자가 비명을 지를 우려가 있을 때는 물로 적신 천으로 입을 막는다.\n- 「조선총독부제령」 41호(1912. 3. 30. 공포) -`,
@@ -474,8 +475,7 @@
         ]
       },
       {
-        id: 17, unit: 1,
-        topic: "1910년대 일제의 식민 통치",
+        id: 17, unit: 1, topic: "1910년대 일제의 식민 통치",
         title: "사료 17: 제1차 조선 교육령 (추가 자료)",
         keywords: ["교육령", "보통학교", "실업", "일본어", "수업연한", "충성", "국어"],
         content: `제1조 조선에 있는 조선인의 교육은 본령에 따른다.\n제2조 교육은 교육에 관한 칙어에 입각하여 충성스러운 국민을 육성하는 것을 본뜻으로 한다.\n제3조 교육은 시대의 흐름과 국민의 수준에 적합하도록 한다.\n제4조 교육은 크게 보통 교육, 실업 교육 및 전문 교육으로 나눈다.\n제5조 보통 교육은 보통의 지식과 기능을 가르치고, 특히 국민 된 성격을 키우며 국어(일본어) 보급을 목적으로 한다.\n제6조 실업 교육은 농업, 상업, 공업 등에 관한 기능을 가르치는 것을 목적으로 한다.\n제7조 전문 교육은 수준 높은 학술과 기예를 가르치는 것을 목적으로 한다.\n제9조 보통학교의 수업 연한은 4년으로 한다.\n제28조 공립 또는 사립 보통학교, 고등 보통학교, 여자 고등 보통학교, 실업 학교 및 전문학교의 설치 또는 폐지는 조선 총독의 허가를 받아야 한다.\n- 「조선 총독부 관보」(1911. 9. 1.) -`,
@@ -490,8 +490,7 @@
 
       // 2차 (18~36번)
       {
-        id: 18, unit: 2,
-        topic: "1910년대 일제의 식민 통치",
+        id: 18, unit: 2, topic: "1910년대 일제의 식민 통치",
         title: "사료 18: 보통학교 교원의 제복과 패검 규정 (추가 자료)",
         keywords: ["교원", "제복", "패검", "칼", "무단통치", "위압감"],
         content: `제1조 조선 총독부 소속 관립 및 공립 학교의 교원 및 직원은 제복을 착용하고 칼(패검)을 차야 한다.\n제2조 교원의 복제 및 패검에 관한 규정은 별도의 훈령으로 정한다.\n- 「조선총독부 훈령」 (1911) -`,
@@ -504,8 +503,7 @@
         ]
       },
       {
-        id: 19, unit: 2,
-        topic: "1910년대 일제의 경제 수탈",
+        id: 19, unit: 2, topic: "1910년대 일제의 경제 수탈",
         title: "사료 19: 토지조사령과 신고주의 원칙 (대표 자료)",
         keywords: ["토지조사령", "신고", "소유권", "기한", "총독부", "약탈"],
         content: `제1조 토지의 소유자는 조선 총독이 정하는 기간 내에 주소, 씨명 및 소유지의 소재, 결수, 지목을 임시 토지조사국장에게 신고하여야 한다.\n제4조 토지의 소유권은 사판(査定) 또는 재결(裁決)에 의하여 확정된다. 기한 내에 신고하지 않은 토지는 국유지로 편입한다.\n- 「토지조사령」(1912. 8. 13.) -`,
@@ -518,8 +516,7 @@
         ]
       },
       {
-        id: 20, unit: 2,
-        topic: "1910년대 일제의 경제 수탈",
+        id: 20, unit: 2, topic: "1910년대 일제의 경제 수탈",
         title: "사료 20: 동양척식주식회사와 농민 수탈 (추가 자료)",
         keywords: ["동양척식주식회사", "이민", "소작농", "소작료", "이주", "척식"],
         content: `본 회사의 목적은 조선의 척식 사업을 경영함에 있다. 회사는 국유 토지를 불하받아 일본인 농민을 이주시키고, 농업에 필요한 자금을 융통하며 토지의 개량 및 매매를 담당한다. 조선인 소작농에게는 고율의 소작료를 징수하여 이익을 배당한다.\n- 「동양척식주식회사법」(1908) -`,
@@ -532,8 +529,7 @@
         ]
       },
       {
-        id: 21, unit: 2,
-        topic: "1910년대 일제의 경제 수탈",
+        id: 21, unit: 2, topic: "1910년대 일제의 경제 수탈",
         title: "사료 21: 회사령의 제정과 허가제 (추가 자료)",
         keywords: ["회사령", "허가", "총독", "해산", "민족자본", "억압"],
         content: `제1조 회사의 설립은 조선 총독의 허가를 받아야 한다.\n제5조 회사가 공공의 질서와 선량한 풍속에 반하는 행위를 하거나 총독의 명령을 위반한 때에는 총독은 회사의 해산을 명할 수 있다.\n- 「회사령」(1910. 12. 29.) -`,
@@ -546,8 +542,7 @@
         ]
       },
       {
-        id: 22, unit: 2,
-        topic: "1910년대 일제의 경제 수탈",
+        id: 22, unit: 2, topic: "1910년대 일제의 경제 수탈",
         title: "사료 22: 삼림령 및 광업령 (추가 자료)",
         keywords: ["삼림령", "광업령", "허가", "국유림", "자원수탈", "총독"],
         content: `임야와 광산의 소유권 및 채굴권을 총독부의 엄격한 허가제로 규정하여, 조선의 주요 금·은·철 광산과 울창한 산림을 일본 독점 자본과 총독부가 장악하도록 강제함.`,
@@ -560,8 +555,7 @@
         ]
       },
       {
-        id: 23, unit: 2,
-        topic: "1910년대 독립운동",
+        id: 23, unit: 2, topic: "1910년대 독립운동",
         title: "사료 23: 독립의군부와 복벽주의 (추가 자료)",
         keywords: ["독립의군부", "임병찬", "고종", "복벽주의", "대한제국", "의병"],
         content: `임병찬 등이 고종의 밀지를 받아 조직하여 국권을 회복하고 고종을 다시 황제로 복위시키려는 복벽주의를 표방하며 총독에게 국권 반환 요구서를 발송하고자 함.`,
@@ -574,8 +568,7 @@
         ]
       },
       {
-        id: 24, unit: 2,
-        topic: "1910년대 독립운동",
+        id: 24, unit: 2, topic: "1910년대 독립운동",
         title: "사료 24: 대한광복회와 공화주의 (추가 자료)",
         keywords: ["대한광복회", "박상진", "공화정", "군대", "의연금", "친일파"],
         content: `박상진, 김좌진 등이 주도하여 비밀 결사로 결성되었으며, 공화 정체의 근대 국가 수립을 목표로 군자금을 모금하고 친일 부호를 처단함.`,
@@ -588,8 +581,7 @@
         ]
       },
       {
-        id: 25, unit: 2,
-        topic: "1910년대 국외 독립운동",
+        id: 25, unit: 2, topic: "1910년대 국외 독립운동",
         title: "사료 25: 신흥무관학교와 서간도 개척 (추가 자료)",
         keywords: ["신흥무관학교", "이회영", "이상룡", "서간도", "삼원포", "독립군"],
         content: `이회영 일가와 신민회 회원들이 만주 삼원포로 이주하여 경학사와 신흥강습소(신흥무관학교)를 설립, 항일 무장 독립군을 양성하는 요람을 개척함.`,
@@ -602,8 +594,7 @@
         ]
       },
       {
-        id: 26, unit: 2,
-        topic: "1910년대 국외 독립운동",
+        id: 26, unit: 2, topic: "1910년대 국외 독립운동",
         title: "사료 26: 대한인국민회와 미주 동포 사회 (추가 자료)",
         keywords: ["대한인국민회", "안창호", "미주", "독립공채", "군자금", "이민"],
         content: `하와이와 미주 본토의 한인 단체들이 통합하여 안창호 등을 중심으로 결성, 독립운동 자금을 모금하고 외교 활동을 지원함.`,
@@ -616,8 +607,7 @@
         ]
       },
       {
-        id: 27, unit: 2,
-        topic: "3·1 운동과 대한민국 임시 정부",
+        id: 27, unit: 2, topic: "3·1 운동과 대한민국 임시 정부",
         title: "사료 27: 2·8 독립 선언서 (도쿄 유학생) (추가 자료)",
         keywords: ["2·8독립선언", "도쿄", "유학생", "민족자결", "정의", "혈전"],
         content: `"조선 청년 독립단은 우리 2천만 조선 민족을 대표하여 정의와 자유의 승리를 쟁취한 만국 앞에 조선의 독립을 기성(期成)하기를 선언하노라."`,
@@ -630,8 +620,7 @@
         ]
       },
       {
-        id: 28, unit: 2,
-        topic: "3·1 운동과 대한민국 임시 정부",
+        id: 28, unit: 2, topic: "3·1 운동과 대한민국 임시 정부",
         title: "사료 28: 기미독립선언서 공약 3장 (대표 자료)",
         keywords: ["공약3장", "정의", "비폭력", "질서", "자주독립", "행동"],
         content: `하나, 오늘 우리의 이 거사는 정의, 인도, 생존, 존영을 위하는 민족적 요구이니, 오직 자유의 정신을 발휘할 것이요, 결코 배타적 감정으로 치닫지 말라.\n하나, 최후의 한 사람까지, 최후의 일각까지 민족의 정당한 의사를 시원스럽게 발표하라.\n하나, 모든 행동은 질서를 존중하여 우리의 주장과 태도로 하여금 어디까지나 공명정대하게 하라.`,
@@ -644,8 +633,7 @@
         ]
       },
       {
-        id: 29, unit: 2,
-        topic: "3·1 운동과 대한민국 임시 정부",
+        id: 29, unit: 2, topic: "3·1 운동과 대한민국 임시 정부",
         title: "사료 29: 제암리 학살 사건 기록 (추가 자료)",
         keywords: ["제암리", "학살", "교회", "방화", "만세운동", "스코필드"],
         content: `수원 제암리 주민들을 교회당에 모이게 한 뒤 출입문을 잠그고 무차별 사격 및 방화를 저질러 민간인을 학살한 일제의 만행을 기록함.`,
@@ -658,8 +646,7 @@
         ]
       },
       {
-        id: 30, unit: 2,
-        topic: "3·1 운동과 대한민국 임시 정부",
+        id: 30, unit: 2, topic: "3·1 운동과 대한민국 임시 정부",
         title: "사료 30: 대한민국 임시 헌장 (1919. 4.) (추가 자료)",
         keywords: ["임시헌장", "민주공화제", "임시정부", "평등", "의정원", "인민"],
         content: `제1조 대한민국은 민주공화제로 함.\n제2조 대한민국은 임시 정부가 임시 의정원의 결의에 의하여 이를 통치함.\n제3조 대한민국의 인민은 남녀, 귀천 및 빈부의 계급이 없고 일체 평등함.`,
@@ -672,8 +659,7 @@
         ]
       },
       {
-        id: 31, unit: 2,
-        topic: "3·1 운동과 대한민국 임시 정부",
+        id: 31, unit: 2, topic: "3·1 운동과 대한민국 임시 정부",
         title: "사료 31: 임시 정부의 연통제와 교통국 (추가 자료)",
         keywords: ["연통제", "교통국", "비밀행정", "독립공채", "군자금", "통신"],
         content: `국내외를 연결하는 비밀 행정 조직망인 연통제와 정보 수집 및 군자금 조달을 담당한 교통국 운영에 관한 규정.`,
@@ -686,8 +672,7 @@
         ]
       },
       {
-        id: 32, unit: 2,
-        topic: "1920년대 일제의 식민 통치",
+        id: 32, unit: 2, topic: "1920년대 일제의 식민 통치",
         title: "사료 32: 사이토 총독의 문화 통치 방침 (대표 자료)",
         keywords: ["문화통치", "사이토", "친일파", "분열", "보통경찰", "기만"],
         content: `조선인의 민심을 수습하고 지식인과 자산가를 회유하여 친일 세력으로 양성하며, 종래의 무단통치를 완화하는 듯한 정책을 펴되 치안 통제를 정밀화함.`,
@@ -700,8 +685,7 @@
         ]
       },
       {
-        id: 33, unit: 2,
-        topic: "1920년대 일제의 식민 통치",
+        id: 33, unit: 2, topic: "1920년대 일제의 식민 통치",
         title: "사료 33: 치안유지법 (1925) (추가 자료)",
         keywords: ["치안유지법", "국체변혁", "사유재산", "사회주의", "독립운동", "탄압"],
         content: `제1조 국체(國體)를 변혁하거나 사유재산 제도를 부인할 목적으로 결사를 조직하거나 이에 가입한 자는 징역 또는 금고에 처한다.`,
@@ -714,8 +698,7 @@
         ]
       },
       {
-        id: 34, unit: 2,
-        topic: "1920년대 일제의 경제 수탈",
+        id: 34, unit: 2, topic: "1920년대 일제의 경제 수탈",
         title: "사료 34: 산미증식계획의 결과와 식량 수탈 (대표 자료)",
         keywords: ["산미증식계획", "수탈", "이출", "토지개량", "소작농", "식량부족"],
         content: `쌀 생산량의 증가분보다 일본으로 이출된 쌀의 양이 훨씬 많아져 국내 1인당 쌀 소비량은 급감하고 농민은 만주산 잡곡으로 연명함.`,
@@ -728,8 +711,7 @@
         ]
       },
       {
-        id: 35, unit: 2,
-        topic: "1920년대 무장 독립 전쟁",
+        id: 35, unit: 2, topic: "1920년대 무장 독립 전쟁",
         title: "사료 35: 봉오동 전투와 청산리 대첩 보고서 (대표 자료)",
         keywords: ["봉오동", "청산리", "홍범도", "김좌진", "독립군", "대첩"],
         content: `대한독립군(홍범도)과 북로군정서(김좌진) 등이 만주 일대에서 일본 정규군을 상대로 대승을 거둔 전투 상보 기록.`,
@@ -742,8 +724,7 @@
         ]
       },
       {
-        id: 36, unit: 2,
-        topic: "1920년대 무장 독립 전쟁",
+        id: 36, unit: 2, topic: "1920년대 무장 독립 전쟁",
         title: "사료 36: 미쓰야 협정 (1925) (추가 자료)",
         keywords: ["미쓰야협정", "만주군벌", "독립군", "인도", "현상금", "탄압"],
         content: `조선 총독부 경무국장 미쓰야와 만주 군벌 장쭤린 사이에 체결된 조약으로, 만주 내 한국인 독립운동가를 체포하여 일본에 인도하도록 강제함.`,
@@ -768,13 +749,30 @@
     let currentUnit = 1;
     let currentSourceId = 1;
     let currentIdx = 0;
-    let studentInfo = {};
-    const studentAnswersBySource = {};
-    const submittedOnceBySource = {};
+    let studentInfo = null; // 활성 학생 정보 (null이면 비로그인)
+    
+    // [핵심 해결] 학생 식별자(studentKey)별로 답안과 제출 여부를 독립 격리 저장
+    const studentDb = JSON.parse(localStorage.getItem("korea_history_student_db") || "{}");
 
-    // [핵심 기능] 어떤 화면에서든 처음 인적사항 화면으로 안전하게 돌아가는 함수
+    function getOrCreateDeviceId() {
+      let devId = localStorage.getItem("korea_history_device_id");
+      if (!devId) {
+        devId = "DEV-" + Math.random().toString(36).substring(2, 9) + "-" + Date.now().toString(36);
+        localStorage.setItem("korea_history_device_id", devId);
+      }
+      return devId;
+    }
+
+    // [핵심 기능] 처음으로(학생 변경) 실행 시 현재 작성 중인 임시 화면을 완전 초기화
     function returnToHome() {
-      if (confirm("첫 화면(학생 인적사항 등록)으로 돌아가시겠습니까?\n작성 중이던 내용은 저장되어 있으며, 학생 정보를 변경할 수 있습니다.")) {
+      if (confirm("첫 화면(학생 인적사항 등록)으로 돌아가시겠습니까?\n현재 학생의 작성 내용은 안전하게 저장되며, 다른 학생으로 변경할 수 있습니다.")) {
+        saveCurrentStepAnswer(); // 현재 학생 데이터 안전 저장
+        studentInfo = null; // 활성 학생 세션 해제
+        
+        // 입력창 및 화면 텍스트 완전 청소
+        document.getElementById("answerInput").value = "";
+        document.getElementById("sPin").value = "";
+
         document.getElementById("sourceCard").classList.add("hidden");
         document.getElementById("stepCard").classList.add("hidden");
         document.getElementById("studentFeedbackCard").classList.add("hidden");
@@ -790,14 +788,54 @@
       const sClass = document.getElementById("sClass").value.trim();
       const sNum = document.getElementById("sNum").value.trim();
       const sName = document.getElementById("sName").value.trim();
+      const sPin = document.getElementById("sPin").value.trim();
       const selectedUnit = parseInt(document.querySelector('input[name="initUnitRadio"]:checked').value);
 
       if (!grade || !sClass || !sNum || !sName) {
-        alert("학생 정보를 모두 입력해 주세요.");
+        alert("학년, 반, 번호, 이름을 모두 입력해 주세요.");
         return;
       }
 
-      studentInfo = { grade, sClass, sNum, name: sName };
+      if (!sPin || sPin.length !== 4 || isNaN(sPin)) {
+        alert("비밀번호는 숫자 4자리로 입력해 주세요.");
+        document.getElementById("sPin").focus();
+        return;
+      }
+
+      const currentDeviceId = getOrCreateDeviceId();
+      const studentKey = `${grade}-${sClass}-${sNum}`;
+      const registeredAccounts = JSON.parse(localStorage.getItem("korea_history_student_pins") || "{}");
+
+      if (registeredAccounts[studentKey]) {
+        const account = registeredAccounts[studentKey];
+        if (account.deviceId && account.deviceId !== currentDeviceId) {
+          alert(`[접속 차단] 해당 학번(${studentKey} ${account.name})은 다른 기기에서 이미 등록되었습니다.\n본인 기기에서만 접속할 수 있습니다.`);
+          return;
+        }
+        if (account.pin !== sPin) {
+          alert(`[인증 실패] 비밀번호가 일치하지 않습니다.\n본인의 학번과 4자리 비밀번호를 다시 확인해 주세요.`);
+          document.getElementById("sPin").focus();
+          return;
+        }
+      } else {
+        registeredAccounts[studentKey] = {
+          name: sName,
+          pin: sPin,
+          deviceId: currentDeviceId,
+          createdAt: new Date().toLocaleString("ko-KR")
+        };
+        localStorage.setItem("korea_history_student_pins", JSON.stringify(registeredAccounts));
+      }
+
+      // [핵심] 학생별 독립 저장소 초기화
+      if (!studentDb[studentKey]) {
+        studentDb[studentKey] = {
+          answersBySource: {},
+          submittedOnceBySource: {}
+        };
+      }
+
+      studentInfo = { grade, sClass, sNum, name: sName, pin: sPin, studentKey };
       document.getElementById("studentInfoCard").classList.add("hidden");
       document.getElementById("sourceCard").classList.remove("hidden");
       document.getElementById("stepCard").classList.remove("hidden");
@@ -852,8 +890,10 @@
       document.getElementById("currentSourceHeader").innerText = sourceObj.title;
       document.getElementById("currentSourceBody").innerText = sourceObj.content;
 
-      if (!studentAnswersBySource[currentSourceId]) {
-        studentAnswersBySource[currentSourceId] = Array(steps.length).fill("");
+      // [핵심] 현재 학생의 학번에 해당하는 답안 공간만 불러옴
+      const sKey = studentInfo.studentKey;
+      if (!studentDb[sKey].answersBySource[currentSourceId]) {
+        studentDb[sKey].answersBySource[currentSourceId] = Array(steps.length).fill("");
       }
 
       document.getElementById("studentFeedbackCard").classList.add("hidden");
@@ -888,16 +928,21 @@
       }
     }
 
+    // [핵심] 현재 활성 학생의 공간에만 정확히 저장
     function saveCurrentStepAnswer() {
-      if (!studentAnswersBySource[currentSourceId]) {
-        studentAnswersBySource[currentSourceId] = Array(steps.length).fill("");
+      if (!studentInfo) return;
+      const sKey = studentInfo.studentKey;
+      if (!studentDb[sKey].answersBySource[currentSourceId]) {
+        studentDb[sKey].answersBySource[currentSourceId] = Array(steps.length).fill("");
       }
-      studentAnswersBySource[currentSourceId][currentIdx] = document.getElementById("answerInput").value.trim();
+      studentDb[sKey].answersBySource[currentSourceId][currentIdx] = document.getElementById("answerInput").value.trim();
+      localStorage.setItem("korea_history_student_db", JSON.stringify(studentDb));
     }
 
     function renderStepTabs() {
       const bar = document.getElementById("stepTabsBar");
-      const currentAns = studentAnswersBySource[currentSourceId] || [];
+      const sKey = studentInfo.studentKey;
+      const currentAns = studentDb[sKey].answersBySource[currentSourceId] || [];
       bar.innerHTML = steps.map((s, idx) => {
         const isFilled = currentAns[idx] && currentAns[idx].length > 0;
         const activeClass = idx === currentIdx ? "active" : (isFilled ? "completed" : "");
@@ -924,7 +969,9 @@
       document.getElementById("stepDesc").innerText = s.desc;
       document.getElementById("stepRubricArea").innerText = s.rubricKey;
 
-      const currentAnswers = studentAnswersBySource[currentSourceId] || Array(steps.length).fill("");
+      // [핵심] 현재 학생의 해당 문항 답안만 textarea에 표시
+      const sKey = studentInfo.studentKey;
+      const currentAnswers = studentDb[sKey].answersBySource[currentSourceId] || Array(steps.length).fill("");
       document.getElementById("answerInput").value = currentAnswers[currentIdx] || "";
 
       document.getElementById("prevBtn").classList.toggle("hidden", currentIdx === 0);
@@ -935,6 +982,7 @@
 
     function moveStep(dir) {
       const val = document.getElementById("answerInput").value.trim();
+      const sKey = studentInfo.studentKey;
       
       if (dir === 1) {
         if (!val) {
@@ -942,10 +990,10 @@
           document.getElementById("answerInput").focus();
           return;
         }
-        studentAnswersBySource[currentSourceId][currentIdx] = val;
+        studentDb[sKey].answersBySource[currentSourceId][currentIdx] = val;
 
         if (currentIdx === steps.length - 1) {
-          const ansList = studentAnswersBySource[currentSourceId];
+          const ansList = studentDb[sKey].answersBySource[currentSourceId];
           for (let i = 0; i < steps.length; i++) {
             if (!ansList[i] || ansList[i].trim() === "") {
               alert(`${i + 1}단계 답변이 작성되지 않았습니다. 모든 단계를 빠짐없이 작성해야 채점받을 수 있습니다.`);
@@ -957,7 +1005,7 @@
           return;
         }
       } else {
-        studentAnswersBySource[currentSourceId][currentIdx] = val;
+        studentDb[sKey].answersBySource[currentSourceId][currentIdx] = val;
       }
 
       currentIdx += dir;
@@ -1051,10 +1099,13 @@
 
     function evaluateAndShowFeedback() {
       saveCurrentStepAnswer();
-      const currentAns = studentAnswersBySource[currentSourceId];
+      const sKey = studentInfo.studentKey;
+      const currentAns = studentDb[sKey].answersBySource[currentSourceId];
       const sourceObj = historySources.find(s => s.id === currentSourceId);
 
-      submittedOnceBySource[currentSourceId] = true;
+      // 현재 학생의 1회 제출 플래그 활성화
+      studentDb[sKey].submittedOnceBySource[currentSourceId] = true;
+      localStorage.setItem("korea_history_student_db", JSON.stringify(studentDb));
 
       const evalResult = runEvaluation(currentAns, sourceObj);
       const seteuk = buildSeteuk(studentInfo.name, sourceObj, evalResult);
@@ -1135,7 +1186,8 @@
 
     function reEvaluateCurrentAnswers() {
       saveCurrentStepAnswer();
-      const ansList = studentAnswersBySource[currentSourceId];
+      const sKey = studentInfo.studentKey;
+      const ansList = studentDb[sKey].answersBySource[currentSourceId];
       for (let i = 0; i < steps.length; i++) {
         if (!ansList[i] || ansList[i].trim() === "") {
           alert(`${i + 1}단계 답변이 비어 있습니다. 모든 단계를 채워 넣어야 다시 채점받을 수 있습니다.`);
@@ -1172,13 +1224,14 @@
       const tbody = document.getElementById("submissionTableBody");
 
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-sub); padding:24px;">제출된 학생 데이터가 없습니다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-sub); padding:24px;">제출된 학생 데이터가 없습니다.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = list.map(item => `
         <tr onclick="viewTeacherDetail(${item.id})">
           <td style="font-weight:700;">${item.student.grade}-${item.student.sClass}-${item.student.sNum} ${item.student.name}</td>
+          <td style="color:#d97706; font-weight:700;">${item.student.pin || '없음'}</td>
           <td>${item.sourceTitle}</td>
           <td><span style="font-weight:800; color:var(--primary); font-size:1rem;">${item.evalResult.total}점</span></td>
           <td style="color:var(--text-sub); font-size:0.85rem;">${item.date}</td>
@@ -1196,7 +1249,7 @@
       detailCard.classList.remove("hidden");
 
       document.getElementById("detailStudentHeader").innerText = 
-        `[상세 평가] ${item.student.name} 학생 - ${item.sourceTitle} (총점: ${item.evalResult.total}점 / 100점)`;
+        `[상세 평가] ${item.student.name} 학생 (PIN: ${item.student.pin || '미지정'}) - ${item.sourceTitle} (총점: ${item.evalResult.total}점 / 100점)`;
 
       document.getElementById("teacherSeteukText").innerText = item.seteuk;
 
@@ -1222,8 +1275,11 @@
     }
 
     function clearAllData() {
-      if (confirm("정말로 모든 제출 데이터를 초기화하시겠습니까?")) {
+      if (confirm("정말로 모든 학생 제출 데이터와 등록된 비밀번호/기기 정보를 초기화하시겠습니까?")) {
         localStorage.removeItem("korea_history_submissions_merged");
+        localStorage.removeItem("korea_history_student_pins");
+        localStorage.removeItem("korea_history_student_db");
+        localStorage.removeItem("korea_history_device_id");
         renderTeacherDashboard();
         closeDetailCard();
       }
